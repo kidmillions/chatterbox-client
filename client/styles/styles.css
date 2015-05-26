@@ -46,6 +46,11 @@ body {
     line-height: 13px;
 }
 
+.friend {
+    color: red;
+}
+
+
 form {
     padding: 20px;
     padding-left: 0;

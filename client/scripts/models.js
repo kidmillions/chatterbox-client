@@ -7,16 +7,14 @@ var Message = Backbone.Model.extend({
 
 });
 
-
 var MessageView = Backbone.View.extend({
   render: function() {
-    var htmlOld = '<div class="message">' +
-    + "<span class='username'>" + _.escape(this.model.get('username')) + ":</span>" +
-    + "<span class='message'>" + _.escape(this.model.get('text')) + ":</span>"
-    + '</div>';
+    var isFriend = app.friends.findWhere({'username': this.model.get('username')});
+
+    var usernameSpan = isFriend ? "<span class='username friend'>" : "<span class='username'>";
 
     var html = "<div class='message'>";
-    html+= "<span class='username'>" + _.escape(this.model.get('username')) + "</span>:";
+    html+= usernameSpan + _.escape(this.model.get('username')) + "</span>:";
     html+= "<span class='text'>" + _.escape(this.model.get('text')) + "</span>";
 
     return this.$el.html(html);
@@ -26,6 +24,7 @@ var MessageView = Backbone.View.extend({
 var Messages = Backbone.Collection.extend({
   model: Message,
   url: 'https://api.parse.com/1/classes/chatterbox',
+  query: '',
   parse: function(data) {
     return data.results;
   }
@@ -50,4 +49,26 @@ var MessagesView = Backbone.View.extend({
   }
 });
 
-//app.messages = new Messages(app.fetch());
+var Friend = Backbone.Model.extend({
+  initialize: function(username) {
+    this.set('username', username);
+  }
+});
+
+var Friends = Backbone.Collection.extend({
+  model: Friend
+});
+
+var FriendsView = Backbone.View.extend({
+  initialize: function (){
+    this.model.on('change', this.render, this);
+  },
+  render: function() {
+    var html = '<div>' + '</div>';
+    this.$el.html(html);
+    this.$el.find('div').append(this.model.map(function(friend) {
+      return friend.get('username');
+    }));
+    return this.$el;
+  }
+});

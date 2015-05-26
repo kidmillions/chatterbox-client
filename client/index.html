@@ -20,11 +20,13 @@
   </head>
   <body>
     <div id="main">
+      <div id="friends"></div>
       <h1>chatterbox</h1>
       <form id="form">
         <input type="text" id="text" />
         <input type="submit">
         <button type="button" id="clear">Clear Messages</button>
+        <button type="button" id="unfilter">Show All Messages</button>
       </form>
 
       <div id="chats"></div>
@@ -32,11 +34,18 @@
     </div>
     <script>
       $(document).ready(function() {
+        /******************
+        *  INIT
+        *******************/
         app.cutoff = new Date(0);
 
         app.messages = new Messages();
         app.messages.fetch();
         app.messagesView = new MessagesView({ model: app.messages });
+
+        app.friends = new Friends();
+        app.friendsView = new FriendsView({ model: app.friends });
+
         $('#chats').html(app.messagesView.render());
         $('#form').on('submit', function(e) {
           console.log("submitted")
@@ -45,6 +54,7 @@
           message.set('username', window.username);
           message.set('text', $("#text").val());
           app.send(message.attributes);
+          $('#text').val('');
         });
 
         $('#clear').on('click', function(e) {
@@ -54,11 +64,37 @@
         })
 
 
+        $('#chats').on('click', '.username', function() {
+          var username = $(this).text();
+          app.messages.query = {'username': username};
+
+          if(!app.friends.findWhere({'username': username})) {
+            var friend = new Friend(username);
+            app.friends.push(friend);
+          }
+        });
+
+        $('#unfilter').on('click', function() {
+          app.messages.query = '';
+        });
 
         setInterval(function() {
+          var currentQuery = app.messages.query;
+          var currentURL = app.messages.url;
+          if( currentQuery !== '') {
+            var urlString = 'https://api.parse.com/1/classes/chatterbox?where=' + encodeURIComponent(JSON.stringify(currentQuery));
+            app.messages.url = urlString;
+          }
+          else {
+            app.messages.url = 'https://api.parse.com/1/classes/chatterbox';
+          }
+
           app.messages.fetch();
           $('#chats').empty();
           $('#chats').html(app.messagesView.render());
+
+          $('#friends').html(app.friendsView.render());
+
         }, 500);
       });
     </script>
