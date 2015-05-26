@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
 
     <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
@@ -14,11 +16,21 @@
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/models.js"></script>
   </head>
   <body>
     <div id="main">
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
     </div>
+
+    <script>
+      $(document).ready(function() {
+        app.messages = new Messages();
+        app.messages.fetch();
+        app.messagesView = new MessagesView({ model: app.messages });
+        $('body').append(app.messagesView.render());
+      });
+    </script>
   </body>
 </html>
