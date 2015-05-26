@@ -64,10 +64,10 @@ var FriendsView = Backbone.View.extend({
     this.model.on('change', this.render, this);
   },
   render: function() {
-    var html = '<div>' + '</div>';
+    var html = '<ul>' + '</ul>';
     this.$el.html(html);
-    this.$el.find('div').append(this.model.map(function(friend) {
-      return friend.get('username');
+    this.$el.find('ul').append(this.model.map(function(friend) {
+      return '<li>' + friend.get('username') + '</li>';
     }));
     return this.$el;
   }
