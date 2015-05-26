@@ -39,8 +39,12 @@ var MessagesView = Backbone.View.extend({
     var html = '<div>' + '</div>';
     this.$el.html(html);
     this.$el.find('div').append(this.model.map(function(message) {
-      var messageView = new MessageView({model: message});
-      return messageView.render();
+      var messageDate = new Date(message.get('createdAt'));
+
+      if(messageDate >= app.cutoff) {
+        var messageView = new MessageView({model: message});
+        return messageView.render();
+      }
     }));
     return this.$el;
   }

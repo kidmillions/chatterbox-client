@@ -24,6 +24,7 @@
       <form id="form">
         <input type="text" id="text" />
         <input type="submit">
+        <button type="button" id="clear">Clear Messages</button>
       </form>
 
       <div id="chats"></div>
@@ -31,6 +32,8 @@
     </div>
     <script>
       $(document).ready(function() {
+        app.cutoff = new Date(0);
+
         app.messages = new Messages();
         app.messages.fetch();
         app.messagesView = new MessagesView({ model: app.messages });
@@ -43,6 +46,14 @@
           message.set('text', $("#text").val());
           app.send(message.attributes);
         });
+
+        $('#clear').on('click', function(e) {
+          app.cutoff = Date.now();
+          e.preventDefault();
+          $('#chats').empty();
+        })
+
+
 
         setInterval(function() {
           app.messages.fetch();
