@@ -4,13 +4,12 @@ var Message = Backbone.Model.extend({
   //   this.set('text', text);
   //   this.set('roomname', roomname);
   // }
+
 });
 
 
 var MessageView = Backbone.View.extend({
   render: function() {
-    //debugger;
-
     var htmlOld = '<div class="message">' +
     + "<span class='username'>" + _.escape(this.model.get('username')) + ":</span>" +
     + "<span class='message'>" + _.escape(this.model.get('text')) + ":</span>"
@@ -28,7 +27,6 @@ var Messages = Backbone.Collection.extend({
   model: Message,
   url: 'https://api.parse.com/1/classes/chatterbox',
   parse: function(data) {
-    //debugger;
     return data.results;
   }
 });
@@ -49,4 +47,3 @@ var MessagesView = Backbone.View.extend({
 });
 
 //app.messages = new Messages(app.fetch());
-
