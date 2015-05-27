@@ -26,18 +26,20 @@ var Messages = Backbone.Collection.extend({
   url: 'https://api.parse.com/1/classes/chatterbox',
   query: '',
   parse: function(data) {
+
+    //pass the collection rooms to the room model
     return data.results;
   }
 });
 
 var MessagesView = Backbone.View.extend({
   initialize: function (){
-    this.model.on('change', this.render, this);
+    this.collection.on('sync', this.render, this);
   },
   render: function() {
     var html = '<div>' + '</div>';
     this.$el.html(html);
-    this.$el.find('div').append(this.model.map(function(message) {
+    this.$el.find('div').append(this.collection.map(function(message) {
       var messageDate = new Date(message.get('createdAt'));
 
       if(messageDate >= app.cutoff) {
@@ -72,3 +74,68 @@ var FriendsView = Backbone.View.extend({
     return this.$el;
   }
 });
+
+var Room = Backbone.Model.extend({
+  url: 'https://api.parse.com/1/classes/chatterbox'
+  ,defaults: {
+    roomname: 'lobbyDEFAULT',
+    name: 'lobbyDEFAULT'
+  }
+  // initialize: function(name) {
+  //   this.set('name', name);
+  // }
+});
+
+var roomList = [];
+
+var Rooms = Backbone.Collection.extend({
+  model: Room,
+  url: 'https://api.parse.com/1/classes/chatterbox',
+  getRooms: function() {
+    this.fetch();
+  },
+  parse: function(response) {
+    var rooms = [];
+    for (var i = 0; i < response.results.length; i++) {
+      if(roomList.indexOf(response.results[i].roomname) === -1) {
+         rooms.push({ roomname: response.results[i].roomname });
+         roomList.push(response.results[i].roomname);
+       }
+    }
+    //debugger;
+    return rooms;
+  }
+});
+
+var RoomView = Backbone.View.extend({
+  template: _.template('<li><%=roomname%></li>'),
+  //template: _.template('<li>CHEESE YUM</li>'),
+  render: function() {
+    this.$el.html(this.template(this.model.attributes));
+    return this.$el;
+  }
+})
+
+
+var RoomsView = Backbone.View.extend({
+  initialize: function() {
+    this.collection.on('sync', this.render, this);
+  },
+  render: function() {
+    //this.collection.forEach(this.renderRoom, this);
+    var context = this;
+    this.$el.append(this.collection.map(function(room) {
+      var roomView = new RoomView({model: room});
+      return roomView.render();
+    }));
+    return this.$el;
+  },
+  renderRoom: function() {
+    var roomView = new RoomView({model: Room});
+    this.$el.append(roomView.render());
+  }
+});
+
+
+
+

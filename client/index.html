@@ -63,12 +63,11 @@
         <div class="col-sm-3 col-md-2 sidebar">
           <h1>Friends</h1>
           <div id="friends" class="nav nav-sidebar"></div>
-
-          <!-- <ul class="nav nav-sidebar">
-
-          </ul>
-          <ul class="nav nav-sidebar">
-          </ul> -->
+          <h1>Rooms</h1>
+          <div class="nav nav-sidebar">
+            <ul id="rooms">
+            </ul>
+          </div>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Chats</h1>
@@ -98,10 +97,14 @@
 
         app.messages = new Messages();
         app.messages.fetch();
-        app.messagesView = new MessagesView({ model: app.messages });
+        app.messagesView = new MessagesView({ collection: app.messages });
 
         app.friends = new Friends();
         app.friendsView = new FriendsView({ model: app.friends });
+
+        app.rooms = new Rooms();
+        app.rooms.getRooms();
+        app.roomsView = new RoomsView({el: $("#rooms"), collection: app.rooms });
 
         $('#chats').html(app.messagesView.render());
         $('#form').on('submit', function(e) {
@@ -118,8 +121,7 @@
           app.cutoff = Date.now();
           e.preventDefault();
           $('#chats').empty();
-        })
-
+        });
 
         $('#chats').on('click', '.username', function() {
           var username = $(this).text();
