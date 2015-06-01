@@ -78,8 +78,8 @@ var FriendsView = Backbone.View.extend({
 var Room = Backbone.Model.extend({
   url: 'https://api.parse.com/1/classes/chatterbox'
   ,defaults: {
-    roomname: 'lobbyDEFAULT',
-    name: 'lobbyDEFAULT'
+    roomname: 'lobby',
+    name: 'lobby'
   }
   // initialize: function(name) {
   //   this.set('name', name);
@@ -102,14 +102,12 @@ var Rooms = Backbone.Collection.extend({
          roomList.push(response.results[i].roomname);
        }
     }
-    //debugger;
     return rooms;
   }
 });
 
 var RoomView = Backbone.View.extend({
   template: _.template('<li><%=roomname%></li>'),
-  //template: _.template('<li>CHEESE YUM</li>'),
   render: function() {
     this.$el.html(this.template(this.model.attributes));
     return this.$el;

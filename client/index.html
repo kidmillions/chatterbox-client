@@ -45,15 +45,15 @@
           <a class="navbar-brand" href="#">Chatterbox</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
+         <!--  <ul class="nav navbar-nav navbar-right">
             <li><a href="#">Dashboard</a></li>
             <li><a href="#">Settings</a></li>
             <li><a href="#">Profile</a></li>
             <li><a href="#">Help</a></li>
-          </ul>
-          <form class="navbar-form navbar-right">
+          </ul> -->
+          <!-- <form class="navbar-form navbar-right">
             <input type="text" class="form-control" placeholder="Search...">
-          </form>
+          </form> -->
         </div>
       </div>
     </nav>
@@ -94,14 +94,11 @@
         *  INIT
         *******************/
         app.cutoff = new Date(0);
-
         app.messages = new Messages();
         app.messages.fetch();
         app.messagesView = new MessagesView({ collection: app.messages });
-
         app.friends = new Friends();
         app.friendsView = new FriendsView({ model: app.friends });
-
         app.rooms = new Rooms();
         app.rooms.getRooms();
         app.roomsView = new RoomsView({el: $("#rooms"), collection: app.rooms });
@@ -147,13 +144,10 @@
           else {
             app.messages.url = 'https://api.parse.com/1/classes/chatterbox';
           }
-
           app.messages.fetch();
           $('#chats').empty();
           $('#chats').html(app.messagesView.render());
-
           $('#friends').html(app.friendsView.render());
-
         }, 500);
       });
     </script>
